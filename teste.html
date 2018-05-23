@@ -1,0 +1,127 @@
+<html>
+    <head>
+        <script src="./jquery.min.js"></script>
+        <style>
+            body
+            {
+                height: 2000px;
+            }
+        </style>
+    </head>
+    <body>
+        <script>
+
+            class Toast
+            {
+                constructor(x, y, conteudo, tempo, css, callback)
+                {
+                    this.x = x;
+                    this.y = y;
+                    this.conteudo = conteudo;
+                    this.tempo = tempo;
+                    this.callback = callback;
+                    this.divProx = $(`
+                                     <div>
+                                        ${conteudo}
+                                     </div>
+                                   `);
+
+                    this.deslocamento = 50;
+
+                    //default
+                    this.divProx.css({
+                                       border: "1px solid black",
+                                        width: "auto",
+                                        height: "45px",
+                                        position: "absolute",
+                                        display: "none",
+                                        left: this.x + "px",
+                                        top: this.y - this.deslocamento+ "px",
+                                        opacity: "0",
+                                        padding: "10px",
+                                        borderRadius: "20px",
+                                        zIndex: "100",
+                                        boxShadow: "5px 10px;"
+                                     });
+
+                     if(css)
+                     {
+                         this.divProx.css(css);
+                     }
+                }
+
+                hide()
+                {
+                    var obj = this;
+                    $(obj.divProx).animate({ top: (obj.y - obj.deslocamento) + "px" , opacity: "0" },
+                        function()
+                        {
+                            $(obj.divProx).remove();
+
+                            if(typeof obj.callback == "function")
+                            {
+                                console.log("teste");
+                                obj.callback();
+                            }
+                        }
+                    );
+                }
+
+                toast()
+                {
+                    var obj = this;
+                    $(document.body).append(this.divProx);
+                    $(this.divProx).show();
+                    $(this.divProx).animate({ top: this.y + "px" , opacity: "1" });
+
+                    setTimeout(function(){
+
+                        obj.hide();
+
+                    }, this.tempo)
+                }
+
+            }
+
+            var vet = [];
+            var indiceX = 0;
+            var indiceY = 1;
+
+            function teste1()
+            {
+                vet = [];
+
+                for(var j = 1; j < 5; j++)
+                {
+                    for(var i = 1; i <= 10; i++)
+                    {
+                        vet.push(new Toast(100 * i, 100 * j, "teste" + i, 10000));
+                    }
+                }
+
+                indiceX = 0;
+
+                mostraVarios();
+            }
+
+            function mostraVarios()
+            {
+                if(indiceX < vet.length)
+                {
+                    setTimeout(function(){
+                        vet[indiceX++].toast(); mostraVarios();
+                    }, 250)
+                }
+
+            }
+
+            function teste()
+            {
+                var toast = new Toast(100, 100, "CONTEUDO TESTE PARA EXIBIÇÃO", 5000);
+                toast.toast();
+            }
+
+        </script>
+
+    </body>
+</html>
